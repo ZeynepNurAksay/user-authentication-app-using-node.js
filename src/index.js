@@ -16,21 +16,21 @@ const app = express();
 // Apply application middlewares
 app.use(cors());
 
+// Parse json bodies
+app.use(express.json());
+
 // Inject sub router and apis. 
 app.use("/users", userApis);
 
 const main = async() => {
     try {
         // connect with the database
-        await mongoose.connect(DB, {
-            useNewUrlParser: true, 
-            useUnifiedTopology: true
-        });
+        await mongoose.connect(DB);
 
         consola.success("DATABASE CONNECTED...");
 
         // start application server
-        app.listen(PORT, () => consola.success(`Server started on port ${PORT}`));
+        app.listen(PORT, "0.0.0.0", () => consola.success(`Server started on port ${PORT}`));
 
     } catch(err) {
 

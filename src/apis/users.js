@@ -7,6 +7,7 @@ import {randomBytes} from "crypto";
 import sendMail from "../functions/email-sender.js";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { userAuth } from "../middlewares/auth-guard.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -125,7 +126,7 @@ router.post("/api/authenticate", AuthentionValidations, Validator, async(req, re
             });
         }
 
-        let token = user.generateJWT();
+        let token = await user.generateJWT();
         return res.status(200).json({
             message: "Hurray! You are now logged in.",
             token: `Bearer ${token}`,
@@ -140,6 +141,20 @@ router.post("/api/authenticate", AuthentionValidations, Validator, async(req, re
             success: false
         });
     }
+});
+
+/**
+ * @description To get the authenticated user's profile.
+ * @access Private 
+ * @api /users/api/authenticate
+ * @type GET
+ */
+
+router.get("/api/authenticate", userAuth, async(req,res) => {
+    console.log("REQ", req);
+    return res.status(200).json({
+        user: req.user
+    });
 });
 
 export default router;

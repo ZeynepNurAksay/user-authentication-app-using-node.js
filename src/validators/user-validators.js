@@ -7,3 +7,4 @@ const email = check("email", "Please provide a valid email address.").isEmail();
 
 export const RegisterValidations = [password, name, username, email];
 export const AuthentionValidations = [username, password];
+export const ResetPassword = [email];

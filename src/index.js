@@ -16,6 +16,7 @@ import {DB, PORT} from "./constants/index.js";
 // Router exports
 import userApis from "./apis/users.js";
 import profileApis from "./apis/profiles.js";
+import postApis from "./apis/posts.js";
 
 // Import passport middleware
 import "./middlewares/passport-middleware.js";
@@ -35,6 +36,7 @@ app.use(passport.initialize());
 // Inject sub router and apis. 
 app.use("/users", userApis);
 app.use("/profiles", profileApis);
+app.use("/posts", postApis);
 
 const main = async() => {
     try {

@@ -158,3 +158,124 @@ Run in development mode:
 npm run dev
 Run in production:
 npm start
+
+-------------
+
+🔧 Core Utilities & Middleware
+
+This project uses custom utility functions and middleware to handle authentication, file uploads, email delivery, validation, and URL formatting.
+
+📧 Email Sender (functions/email-sender.js)
+
+Handles transactional email delivery using SendGrid.
+
+Features:
+
+Sends verification and password reset emails
+Uses environment-secured API key
+Supports HTML email templates
+
+Usage
+
+await sendMail(email, subject, text, html);
+
+Environment Variables Required
+SENDGRID_API
+APP_HOST_EMAIL
+
+🔗 Slug Generator (functions/slug-generator.js)
+
+Creates SEO-friendly URLs from post titles.
+
+Features
+
+Converts text to lowercase
+Removes accents & special characters
+Replaces spaces with hyphens
+Ensures clean URL formatting
+
+Example
+generateSlug("Hello World! My Post")
+// hello-world-my-post
+
+🔐 Authentication Guard (middlewares/auth-guard.js)
+
+Protects private routes using Passport JWT strategy.
+export const userAuth = passport.authenticate('jwt', { session: false });
+
+Usage
+router.get('/private-route', userAuth, handler);
+
+🛂 Passport JWT Strategy (middlewares/passport-middleware.js)
+
+Handles authentication using JSON Web Tokens.
+
+How It Works
+
+Extracts JWT from Authorization header
+Verifies token using APP_SECRET
+Retrieves user from database
+Attaches safe user object to req.user
+
+Token Format
+Authorization: Bearer <token>
+
+📁 File Upload Middleware (middlewares/uploader.js)
+
+Handles file uploads using Multer.
+
+Upload Types
+
+User Avatar Upload
+upload.single("avatar")
+
+Post Image Upload
+uploadPostImage.single("image")
+
+Storage Locations
+
+Upload Type	Directory
+Avatars	/uploads/
+Post images	/uploads/post-images/
+
+File Naming
+Files are automatically renamed:
+img-<timestamp>.<ext>
+
+✅ Validation Middleware (middlewares/validator-middleware.js)
+
+Validates incoming requests using express-validator.
+
+Features
+
+Collects validation errors
+Returns structured error responses
+Prevents invalid data processing
+
+Example Response
+{
+  "errors": [
+    {
+      "msg": "Title is required",
+      "param": "title"
+    }
+  ]
+}
+
+Usage
+
+router.post(
+  "/route",
+  validations,
+  validatorMiddleware,
+  handler
+);
+
+🔁 Middleware Flow Example
+
+A protected endpoint typically follows this flow:
+JWT Authentication → verify user
+File Upload (optional) → handle images
+Validation → validate request body
+Controller Logic → process request
+Response

@@ -279,3 +279,144 @@ File Upload (optional) → handle images
 Validation → validate request body
 Controller Logic → process request
 Response
+
+-------------------
+
+🗄️ Data Models
+
+The application uses MongoDB with Mongoose for schema modeling and data relationships.
+
+📝 Post Model
+
+Represents user-created content.
+
+Collection: posts
+
+Fields
+
+Field	Type	Description
+postImage	String	URL of the post image
+slug	String	SEO-friendly URL slug
+title	String	Post title
+content	String	Post content
+likes.count	Number	Total likes
+likes.user	ObjectId[]	Users who liked the post
+comments	Array	Post comments
+comments.text	String	Comment content
+comments.user	ObjectId[]	Comment author(s)
+author	ObjectId	Post creator
+timestamps	Date	Created & updated times
+
+Features
+
+Pagination via mongoose-paginate-v2
+Like tracking & user prevention logic
+Comment support
+Author ownership validation
+
+👤 Profile Model
+
+Stores user profile and social media information.
+
+Collection: profiles
+
+Fields
+
+Field	Type	Description
+account	ObjectId	Reference to user
+avatar	String	Profile image URL
+social.facebook	String	Facebook profile
+social.twitter	String	Twitter profile
+social.linkedin	String	LinkedIn profile
+social.instagram	String	Instagram profile
+social.github	String	GitHub profile
+timestamps	Date	Created & updated times
+
+👥 User Model
+
+Handles authentication, security, and account lifecycle.
+
+Collection: users
+
+Fields
+
+Field	Type	Description
+name	String	Full name
+username	String	Unique username
+email	String	Email address
+password	String	Hashed password
+verified	Boolean	Email verification status
+verificationCode	String	Email verification token
+resetPasswordToken	String	Password reset token
+resetPasswordExpiresIn	Date	Token expiry time
+timestamps	Date	Created & updated times
+
+🔐 Security Features
+
+Password hashing via bcrypt
+JWT authentication via JSON Web Token
+Password reset token generation
+Email verification workflow
+Instance Methods
+Compare Password
+user.comparePassword(password)
+Generate JWT
+user.generateJWT()
+Generate Password Reset Token
+user.generatePasswordReset()
+Safe User Data
+user.getUserInfo()
+Returns:
+{
+  "_id": "",
+  "username": "",
+  "email": "",
+  "name": "",
+  "verified": true
+}
+
+🧾 HTML Templates
+
+The server renders minimal HTML pages for verification and password reset flows.
+
+✔ Verification Success Page
+Displayed after email verification.
+Route:
+GET /users/verify-now/:verificationCode
+
+🔑 Password Reset Page
+Interactive password reset form powered by Vue.js.
+Route:
+GET /users/reset-password-now/:token
+Features
+Password confirmation validation
+Calls API to reset password
+Auto-close window after success
+
+❌ Error Page
+Fallback error page displayed when token validation fails or unexpected errors occur.
+
+✅ Request Validation
+The project uses express-validator to ensure incoming request integrity.
+Post Validation
+Ensures required post data.
+title → required  
+content → required
+User Registration Validation
+name → required  
+username → required  
+email → must be valid  
+password → minimum 6 characters
+Authentication Validation
+username → required  
+password → required
+Password Reset Validation
+email → required & valid
+
+🔒 Data Integrity & Safety
+✔ Passwords are hashed before storage
+✔ JWT tokens expire after 1 day
+✔ Password reset tokens expire automatically
+✔ Duplicate likes are prevented
+✔ Protected routes require authentication
+✔ Validation prevents malformed data
